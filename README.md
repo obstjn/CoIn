@@ -35,7 +35,7 @@ If you use the virtual environment you first need to activate it with ``source v
 ```
 python CoIn.py
 ```
-With ``bandcount.tna`` placed in the same folder as the scripts you can try the example system, a system consisting of 5 piecewise linear functions.
+With ``cache_2D_scan.npy`` placed in the same folder as the scripts you can try the example system, a system consisting of 5 piecewise linear functions.
 
 ## Usage
 
