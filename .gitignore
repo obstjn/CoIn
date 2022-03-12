@@ -1,2 +1,6 @@
 __pycache__
+
+# files created by AnT
+*.tna
+
 Param2dBlit.py
