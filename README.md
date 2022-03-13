@@ -5,10 +5,12 @@ This is a simple documentation for the **Co**ndition **In**vestigator (CoIn) ver
 CoIn consists of 4 different Python scripts: `DataGen.py`, `Param2d.py`, `gui.py` and `CoIn.py`.   
                                                                                                       
 To execute them you will need python3 and the packages `numpy`, `matplotlib` and **TODO:GUILIBRARY**.
-You can install them systemwide or in a virtual environment:
+You can install them with `requirements.txt` either systemwide or in a virtual environment:
 
 #### Systemwide
 
+* `git clone https://github.com/obstjn/CoIn.git`
+* `cd CoIn`
 * `pip install -r requirements.txt`
 
 <!--
@@ -25,6 +27,8 @@ Alternatively you may use a virtual environment to easily delete the packages la
 
 
 * ``sudo -H pip install virtualenv`` (if you don't have virtualenv installed)
+* ``git clone https://github.com/obstjn/CoIn.git``
+* ``cd CoIn``
 * ``virtualenv venv`` (create virtualenv named 'venv')
 * ``source venv/bin/activate`` (enter virtualenv; in Windows systems activate might be in ``venv/Scripts``)
 * ``pip install -r requirements.txt`` (install application requirements)
