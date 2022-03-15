@@ -36,7 +36,7 @@ Alternatively you may use a virtual environment to easily delete the packages la
 ## Execution
 
 If you use the virtual environment you first need to activate it with ``source venv/bin/activate`` , then simply execute
-```
+```bash
 python CoIn.py
 ```
 With ``cache_2D_scan.npy`` placed in the same folder as the scripts you can try the example system, a system consisting of 5 piecewise linear functions.
@@ -146,7 +146,7 @@ In ``CoIn.py`` you can configure the plots.
 The main benefit of CoIn is its interactive controls.
 You can add The 2D Parameter selector by initializing the `Cursor()` object and connect it to button presses.
 
-```
+```python
 cursor = Cursor(x_init=ant.aM3, y_init=ant.mM3)  # cursor with (optional) initial parameters 
 cursor.fig.canvas.mpl_connect('button_press_event', update_cursor)
 ```
@@ -159,7 +159,7 @@ However to modify these parameters the `update_cursor()` method needs to be adju
 Namely, the parameters that need to be changed must be connected to `x` and `y`.
 For example, if the x-axis of my 2D scan describes the parameter `aM3`, I can connect it like so,
 
-```
+```python
 ant.aM3 = x     
 ```
 
@@ -172,7 +172,7 @@ You can look for `$$$$` to find the line of code.
 * Does your maximum bandcount exceed 127?
   If so, in ``Param2d.py`` you should change the data type, that is read, from byte to int.
   To do so, change `'b'` to `'i'` in the line 
-  ```
+  ```python
   img = np.loadtxt(file_name, dtype=np.dtype('b'), usecols=2))
   ```
 
