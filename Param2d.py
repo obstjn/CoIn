@@ -49,6 +49,10 @@ class Cursor:
 
     def __init__(self, x_init=None, y_init=None):
         self.fig, self.ax = plt.subplots(figsize=(10,10))
+        #self.text = plt.text(0.76, 1.02, 'hallo', transform=self.ax.transAxes)
+        self.background = None
+        self._background_stale = False
+        self._creating_background = False
         self.ax.set_title('2D-Scan')
         self.ax.set_xlabel(xlabel)
         self.ax.set_ylabel(ylabel)
@@ -56,6 +60,12 @@ class Cursor:
         self.vertical_line = self.ax.axvline(color='k', lw=0.8, ls='--')
         # text location in axes coordinates
         self.text = self.ax.text(0.76, 1.02, '', transform=self.ax.transAxes)
+        self.ax.figure.canvas.mpl_connect('draw_event', self.on_draw)
+
+        # enables dragging the cursor
+        self.cid = None
+        self.ax.figure.canvas.mpl_connect('button_press_event', self.on_press)
+        self.ax.figure.canvas.mpl_connect('button_release_event', self.on_release)
 
         # initial parameters for the crosshair
         if x_init is not None and y_init is not None:
@@ -108,26 +118,79 @@ class Cursor:
         self.text.set_visible(visible)
         return need_redraw
 
-    def on_mouse_click(self, event):
+
+    def on_draw(self, event):
+        # ignore calls to draw if it is in the process of creating the background
+        if self._creating_background:
+            return
+        # else the background needs a redraw upon clicking/cross hair usage
+        self._background_stale = True
+
+
+    def create_new_background(self):
+        if self._creating_background:
+            # discard calls triggered from within this function
+            return
+        self._creating_background = True
+        # hide cross hair & text and draw anew
+        self.set_cross_hair_visible(False)
+        self.ax.figure.canvas.draw()
+        self.ax.figure.canvas.flush_events()
+        # save the background
+        self.background = self.ax.figure.canvas.copy_from_bbox(self.ax.figure.bbox)
+        self._background_stale = False  # fresh background created
+        self.set_cross_hair_visible(True)
+        self._creating_background = False
+
+
+    # enable dragging the crosshair
+    def on_press(self, event):
+        self.cid = self.ax.figure.canvas.mpl_connect('motion_notify_event', self.on_mouse_release)
+        # calling once to update cursor position
+        self.on_mouse_release(event)
+    def on_release(self, event):
+        self.ax.figure.canvas.mpl_disconnect(self.cid)
+
+
+    def on_mouse_release(self, event):
+        if self.background is None:
+            self.create_new_background()
         active_tool = self.ax.get_figure().canvas.manager.toolbar.mode
-        # do nothing if tool e.g. zoom is selected
-        if active_tool != '':
+        # do nothing if tool e.g. zoom is selected or the background isn't ready
+        if active_tool != '' or self._creating_background:
+            self._background_stale = True
             return
         # if out of axes, hide cross hair
         if not event.inaxes == self.ax:
+            if self._background_stale:
+                self.create_new_background()
             need_redraw = self.set_cross_hair_visible(False)
             if need_redraw:
-                self.ax.figure.canvas.draw()
+                self.ax.figure.canvas.restore_region(self.background)
+                self.ax.figure.canvas.blit(self.ax.figure.bbox)  # redraw entire figure
             return
         # update values
         else:
+            if self._background_stale:
+                self.create_new_background()
             self.set_cross_hair_visible(True)
             x, y = event.xdata, event.ydata
             # update the line positions
             self.horizontal_line.set_ydata(y)
             self.vertical_line.set_xdata(x)
             self.text.set_text(f'{xlabel}={x:.3f}, {ylabel}={y:.3f}')
-            self.ax.figure.canvas.draw_idle()
+            # clear background
+            self.ax.figure.canvas.restore_region(self.background)
+            # update main axes and text
+            self.ax.draw_artist(self.horizontal_line)
+            self.ax.draw_artist(self.vertical_line)
+            self.ax.draw_artist(self.text)
+            self.ax.figure.canvas.blit(self.ax.figure.bbox)
+            # for max speed: activate below and change above to self.ax.bbox
+            # can cause glitches when window looses focus
+            # click into gray to fix
+            #self.ax.figure.canvas.blit(self.text.get_window_extent())
+
             return x, y
 
 

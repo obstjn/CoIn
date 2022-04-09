@@ -18,7 +18,7 @@ x_range = np.linspace(L-1, R+1, 750)
 """['tab:orange', 'magenta', 'k', 'tab:cyan', 'tab:green', 'b', 'darkviolet', 'darkgrey']"""
 cp_colors = ['#ff7f0e', '#ff00ff', '#000000', '#17becf', '#2ca02c', '#0000ff', '#9400d2', '#a9a9a9']
 # initial number of iterations: -1 hides critical point, 0 shows cp but not iterations
-cp_initial = [0, 0, 0, 0, 0, 1, 1, 0]
+cp_initial = [0, 0, 0, 0, 0, 0, 0, 0]
 
 #--------------------------------------------#
 # update functions
@@ -43,9 +43,9 @@ def update_critical_points():
 def update_cursor(event):  # trigger
     """ 
     Update the data depending on 2D parameter space
-    Must contain cursor.on_mouse_click(event)
+    Must contain cursor.on_mouse_release(event)
     """
-    position = cursor.on_mouse_click(event)
+    position = cursor.on_mouse_release(event)
     if position is None: 
         return
     x, y = position
@@ -93,7 +93,7 @@ for i in range(len(cp_plots)):
 # interactive controls
 
 cursor = Cursor(x_init=ant.aM3, y_init=ant.mM3)  # cursor with (optional) initial parameters 
-cursor.fig.canvas.mpl_connect('button_press_event', update_cursor)
+cursor.fig.canvas.mpl_connect('button_release_event', update_cursor)
 
 plt.show()
 

@@ -12,7 +12,7 @@ class DataGenerator:
     aR = -1.2
     aM1 = 1.75
     aM2 = 1.25
-    aM3 = -1.5
+    aM3 = -1.1
 
     mL = 1.503
     mR = -0.1

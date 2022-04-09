@@ -144,14 +144,14 @@ In ``CoIn.py`` you can configure the plots.
 ##### Adding interactive controls.
 
 The main benefit of CoIn is its interactive controls.
-You can add The 2D Parameter selector by initializing the `Cursor()` object and connect it to button presses.
+You can add The 2D Parameter selector by initializing the `Cursor()` object and connect it to button releases/presses.
 
 ```python
 cursor = Cursor(x_init=ant.aM3, y_init=ant.mM3)  # cursor with (optional) initial parameters 
-cursor.fig.canvas.mpl_connect('button_press_event', update_cursor)
+cursor.fig.canvas.mpl_connect('button_release_event', update_cursor)
 ```
 
-Everytime a mouse button is pressed the `update_cursor()` method is called.
+Everytime a mouse button is pressed and released the `update_cursor()` method is called.
 
 The cursor should modify aM3 and mM3.
 It is therefore initialized with these initial parameters.
